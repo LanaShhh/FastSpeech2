@@ -26,7 +26,7 @@ class LengthRegulator(nn.Module):
         output = alignment @ x
         if mel_max_length:
             output = F.pad(
-                output, (0, 0, 0, mel_max_length-output.size(1), 0, 0))
+                output, (0, 0, 0, mel_max_length - output.size(1), 0, 0))
         return output
 
     def forward(self, x, alpha=1.0, target=None, mel_max_length=None):
@@ -38,5 +38,6 @@ class LengthRegulator(nn.Module):
         else:
             duration_predictor_output = (duration_predictor_output * alpha).int()
             output = self.LR(x, duration_predictor_output, mel_max_length=mel_max_length)
-            duration_predictor_output = torch.stack([torch.Tensor([i for i in range(1, output.size(1) + 1)])]).long()
+            duration_predictor_output = \
+                torch.stack([torch.Tensor([i for i in range(1, output.size(1) + 1)], device=x.device)]).long()
         return output, duration_predictor_output
