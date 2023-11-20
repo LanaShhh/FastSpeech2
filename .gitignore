@@ -163,4 +163,5 @@ cython_debug/
 data/
 alignments/
 LJSpeech*.tar.*
-alignments.zip
+
+wandb/

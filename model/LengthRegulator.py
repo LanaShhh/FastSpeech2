@@ -36,7 +36,7 @@ class LengthRegulator(nn.Module):
         if target is not None:
             output = self.LR(x, target, mel_max_length=mel_max_length)
         else:
-            duration_predictor_output = torch.round(duration_predictor_output * alpha)
+            duration_predictor_output = (duration_predictor_output * alpha).int()
             output = self.LR(x, duration_predictor_output, mel_max_length=mel_max_length)
             duration_predictor_output = torch.stack([torch.Tensor([i for i in range(1, output.size(1) + 1)])]).long()
         return output, duration_predictor_output

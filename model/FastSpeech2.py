@@ -5,6 +5,7 @@ from model.Decoder import Decoder
 from model.Encoder import Encoder
 from model.VarianceAdaptor import VarianceAdaptor
 from utils import get_mask_from_lengths
+from model.LengthRegulator import LengthRegulator
 
 
 class FastSpeech2(nn.Module):
@@ -14,6 +15,7 @@ class FastSpeech2(nn.Module):
         super(FastSpeech2, self).__init__()
 
         self.encoder = Encoder(model_config)
+        self.lr = LengthRegulator(model_config)
         self.variance_adaptor = VarianceAdaptor(model_config)
         self.decoder = Decoder(model_config)
 
@@ -27,16 +29,26 @@ class FastSpeech2(nn.Module):
 
     def forward(self, src_seq, src_pos, mel_pos=None, mel_max_length=None,
                 length_target=None, pitch_target=None, energy_target=None, alpha=1.0):
+        output, _ = self.encoder(src_seq, src_pos)
+
         # Your code here
+        if self.training:
+            output, duration_predictor_output = self.lr(output, alpha, length_target, mel_max_length)
+            output, pitch_predictor_output, energy_predictor_output = \
+                self.variance_adaptor(output, pitch_target, energy_target)
 
-        encoder_output, _ = self.encoder(src_seq, src_pos)
+            output = self.decoder(output, mel_pos)
+            output = self.mask_tensor(output, mel_pos, mel_max_length)
+            output = self.mel_linear(output)
 
-        lr_output, duration_predictor_output, pitch_predictor_output, energy_predictor_output = \
-            self.variance_adaptor(encoder_output, alpha, length_target, pitch_target, energy_target, mel_max_length)
+            return output, duration_predictor_output, pitch_predictor_output, energy_predictor_output
+        else:
+            output, duration_predictor_output = self.lr(output, alpha)
+            output, pitch_predictor_output, energy_predictor_output = \
+                self.variance_adaptor(output)
 
-        decoder_output = self.decoder(lr_output, mel_pos)
+            output = self.decoder(output, duration_predictor_output)
+            output = self.mel_linear(output)
 
-        mel_linear_output = self.mel_linear(decoder_output)
-        mel_linear_output = self.mask_tensor(mel_linear_output, mel_pos, mel_max_length)
+            return output
 
-        return mel_linear_output, duration_predictor_output, pitch_predictor_output, energy_predictor_output
