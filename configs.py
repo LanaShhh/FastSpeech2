@@ -40,6 +40,15 @@ class FastSpeechConfig:
     BOS_WORD = '<s>'
     EOS_WORD = '</s>'
 
+    # parameters extracted from ljspeech dataset
+    # after getting dataset again in training these parameters will be updated
+    f0_min = -1
+    f0_max = -1
+    energy_min = -1
+    energy_max = -1
+
+    quantize_bins_cnt = 256  # added
+
 
 @dataclass
 class TrainConfig:
@@ -55,8 +64,6 @@ class TrainConfig:
     dataset_folder = "./data/LJSpeech-1.1"
     dataset_archive_path = 'https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2'  # added
     dataset_archive_save_path = './data/LJSpeech-1.1.tar.bz2'
-
-    quantize_bins_cnt = 256  # added
 
     wandb_project = 'fastspeech_example'
 
