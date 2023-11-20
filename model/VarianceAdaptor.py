@@ -1,31 +1,36 @@
 import torch
 import torch.nn as nn
 
-from LengthRegulator import LengthRegulator
-from VariancePredictor import VariancePredictor
+from model.LengthRegulator import LengthRegulator
+from model.VariancePredictor import VariancePredictor
 from configs import model_config
 
 
 class VarianceAdaptor(nn.Module):
     """ Variance Adaptor """
 
-    def __init__(self):
+    def __init__(self,model_config):
         super(VarianceAdaptor, self).__init__()
 
-        self.lr = LengthRegulator()
-        self.pitch_predictor = VariancePredictor()
-        self.energy_predictor = VariancePredictor()
+        self.lr = LengthRegulator(model_config)
+        self.pitch_predictor = VariancePredictor(model_config)
+        self.energy_predictor = VariancePredictor(model_config)
 
-        self.f0_min_log = torch.log(model_config.f0_min).item()
-        self.f0_max_log = torch.log(model_config.f0_max).item()
-        self.pitch_bins = nn.Parameter(torch.exp(
-            torch.linspace(self.f0_min_log, self.f0_max_log, model_config.quantize_bins_cnt)
-        ))
-
-        self.energy_min = torch.log(model_config.f0_min).item()
-        self.energy_max = torch.log(model_config.f0_max).item()
+        # self.f0_min_log = torch.log(model_config.f0_min).item()
+        # self.f0_max_log = torch.log(model_config.f0_max).item()
+        # self.pitch_bins = nn.Parameter(torch.exp(
+        #     torch.linspace(self.f0_min_log, self.f0_max_log, model_config.quantize_bins_cnt - 1)
+        # ))
+        self.f0_min = model_config.f0_min
+        self.f0_max = model_config.f0_max
         self.energy_bins = nn.Parameter(
-            torch.linspace(self.energy_min, self.energy_max, model_config.quantize_bins_cnt)
+            torch.linspace(self.f0_min, self.f0_max, model_config.quantize_bins_cnt - 1)
+        )
+
+        self.energy_min = model_config.energy_min
+        self.energy_max = model_config.energy_max
+        self.pitch_bins = nn.Parameter(
+            torch.linspace(self.energy_min, self.energy_max, model_config.quantize_bins_cnt - 1)
         )
 
         self.pitch_embed = nn.Embedding(model_config.quantize_bins_cnt, model_config.encoder_dim)
@@ -47,7 +52,8 @@ class VarianceAdaptor(nn.Module):
         else:
             energy_additional = energy_predictor_output
 
-        output = output + self.f0_embed(pitch_additional)
+        print(pitch_additional.size(), output.size())
+        output = output + self.pitch_embed(pitch_additional)
         output = output + self.energy_embed(energy_additional)
 
         return output, duration_predictor_output, pitch_predictor_output, energy_predictor_output

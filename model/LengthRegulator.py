@@ -2,17 +2,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from VariancePredictor import VariancePredictor
+from model.VariancePredictor import VariancePredictor
 from utils import create_alignment
-from configs import model_config
 
 
 class LengthRegulator(nn.Module):
     """ Length Regulator """
 
-    def __init__(self):
+    def __init__(self, model_config):
         super(LengthRegulator, self).__init__()
-        self.duration_predictor = VariancePredictor()
+        self.duration_predictor = VariancePredictor(model_config)
 
     def LR(self, x, duration_predictor_output, mel_max_length=None):
         expand_max_len = torch.max(

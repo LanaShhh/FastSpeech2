@@ -1,6 +1,4 @@
-import torch
 import torch.nn as nn
-from configs import model_config
 
 
 class Transpose(nn.Module):
@@ -16,7 +14,7 @@ class Transpose(nn.Module):
 class VariancePredictor(nn.Module):
     """ Duration/pitch/energy Predictor """
 
-    def __init__(self):
+    def __init__(self, model_config):
         super(VariancePredictor, self).__init__()
 
         self.input_size = model_config.encoder_dim

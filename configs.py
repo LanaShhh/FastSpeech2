@@ -42,13 +42,12 @@ class FastSpeechConfig:
 
     # parameters extracted from ljspeech dataset
     # after getting dataset again in training these parameters will be updated
-    f0_min = -1
-    f0_max = -1
-    energy_min = -1
-    energy_max = -1
+    f0_min = 0.0
+    f0_max = 795.7948608398438
+    energy_min = 0.01786651276051998
+    energy_max = 314.9619140625
 
     quantize_bins_cnt = 256  # added
-
 
 @dataclass
 class TrainConfig:
@@ -84,7 +83,8 @@ class TrainConfig:
     log_step = 5
     clear_Time = 20
 
-    batch_expand_size = 32
+    # batch_expand_size = 32
+    batch_expand_size = 1
 
 
 mel_config = MelSpectrogramConfig()

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from speechbrain.utils.data_utils import download_file
 
-from build import build_from_path
+from datasets.build import build_from_path
 from configs import train_config
 
 

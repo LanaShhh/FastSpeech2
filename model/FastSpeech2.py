@@ -1,21 +1,20 @@
 import torch
 import torch.nn as nn
 
-from Decoder import Decoder
-from Encoder import Encoder
-from VarianceAdaptor import VarianceAdaptor
-from configs import mel_config, model_config
+from model.Decoder import Decoder
+from model.Encoder import Encoder
+from model.VarianceAdaptor import VarianceAdaptor
 from utils import get_mask_from_lengths
 
 
 class FastSpeech2(nn.Module):
     """ FastSpeech2 """
 
-    def __init__(self):
+    def __init__(self, mel_config, model_config):
         super(FastSpeech2, self).__init__()
 
         self.encoder = Encoder(model_config)
-        self.variance_adaptor = VarianceAdaptor()
+        self.variance_adaptor = VarianceAdaptor(model_config)
         self.decoder = Decoder(model_config)
 
         self.mel_linear = nn.Linear(model_config.decoder_dim, mel_config.num_mels)

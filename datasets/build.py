@@ -25,6 +25,8 @@ def build_from_path(in_dir, out_dir):
         for line in f.readlines():
             if index % 100 == 0:
                 print("{:d} Done".format(index))
+            if index == 100:
+                break
             parts = line.strip().split('|')
             wav_path = os.path.join(in_dir, 'wavs', '%s.wav' % parts[0])
             text = parts[2]
