@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 
@@ -64,6 +65,7 @@ def get_data_to_buffer():
     f0_min, f0_max = torch.inf, -torch.inf
     energy_min, energy_max = torch.inf, -torch.inf
 
+    logging.info("Creating buffer for dataset")
     for i in tqdm(range(len(text))):
 
         mel_gt_name = os.path.join(

@@ -1,3 +1,4 @@
+import logging
 import os
 
 import torch
@@ -14,8 +15,6 @@ from model.FastSpeech2 import FastSpeech2
 from wandb_writer import WanDBWriter
 
 dataset = prepare_data()
-
-print(len(dataset))
 
 training_loader = DataLoader(
     dataset,
@@ -38,8 +37,6 @@ optimizer = torch.optim.AdamW(
     betas=(0.9, 0.98),
     eps=1e-9)
 
-print(len(training_loader))
-
 scheduler = OneCycleLR(optimizer, **{
     "steps_per_epoch": len(training_loader) * train_config.batch_expand_size,
     "epochs": train_config.epochs,
@@ -51,6 +48,8 @@ scheduler = OneCycleLR(optimizer, **{
 logger = WanDBWriter(train_config)
 
 tqdm_bar = tqdm(total=train_config.epochs * len(training_loader) * train_config.batch_expand_size - current_step)
+
+logging.info("Starting training")
 
 for epoch in range(train_config.epochs):
     for i, batchs in enumerate(training_loader):
@@ -70,8 +69,6 @@ for epoch in range(train_config.epochs):
             mel_pos = db["mel_pos"].long().to(train_config.device)
             src_pos = db["src_pos"].long().to(train_config.device)
             max_mel_len = db["mel_max_len"]
-
-            print(pitch.size(), energy.size(), mel_target.size())
 
             # Forward
             mel_output, duration_prediction, pitch_prediction, energy_prediction = \
@@ -109,9 +106,12 @@ for epoch in range(train_config.epochs):
             optimizer.zero_grad(set_to_none=True)
             scheduler.step()
 
+            if not os.path.exists(train_config.data_path):
+                os.makedirs(train_config.data_path, exist_ok=True)
+            if not os.path.exists(train_config.checkpoint_path):
+                os.makedirs(train_config.checkpoint_path, exist_ok=True)
+
             if current_step % train_config.save_step == 0:
                 torch.save({'model': model.state_dict(), 'optimizer': optimizer.state_dict(
                 )}, os.path.join(train_config.checkpoint_path, 'checkpoint_%d.pth.tar' % current_step))
                 print("save model at step %d ..." % current_step)
-
-

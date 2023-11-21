@@ -10,6 +10,7 @@ def _check_model_old_version(model):
     else:
         return False
 
+
 def update_model(old_model):
     if not _check_model_old_version(old_model):
         return old_model
