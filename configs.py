@@ -64,7 +64,7 @@ class TrainConfig:
     dataset_archive_path = 'https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2'  # added
     dataset_archive_save_path = './data/LJSpeech-1.1.tar.bz2'
 
-    wandb_project = 'fastspeech_example'
+    wandb_project = 'fastspeech2_sdzhumlyakova_implementation'
 
     text_cleaners = ['english_cleaners']
 
@@ -86,6 +86,35 @@ class TrainConfig:
     clear_Time = 20
 
     batch_expand_size = 32
+
+    # for inference
+    # generation configs
+    configs = [
+        {"speed": 1.0, "pitch": 1.0, "energy": 1.0},
+        {"speed": 0.8, "pitch": 1.0, "energy": 1.0},
+        {"speed": 1.2, "pitch": 1.0, "energy": 1.0},
+        {"speed": 1.0, "pitch": 0.8, "energy": 1.0},
+        {"speed": 1.0, "pitch": 1.2, "energy": 1.0},
+        {"speed": 1.0, "pitch": 1.0, "energy": 0.8},
+        {"speed": 1.0, "pitch": 1.0, "energy": 1.2},
+        {"speed": 0.8, "pitch": 0.8, "energy": 0.8},
+        {"speed": 1.2, "pitch": 1.2, "energy": 1.2}
+    ]
+
+    # for inference
+    # texts to generate
+    texts = [
+        "A defibrillator is a device that gives a high energy electric shock to the heart of someone "
+        "who is in cardiac arrest",
+        "Massachusetts Institute of Technology may be best known for its math, science and engineering education",
+        "Wasserstein distance or Kantorovich Rubinstein metric is a distance function defined "
+        "between probability distributions on a given metric space"
+    ]
+
+    # for training
+    # text logged audios
+    logging_text = ("The quality of a speech synthesizer is judged by its similarity "
+                    "to the human voice and by its ability to be understood clearly")
 
 
 mel_config = MelSpectrogramConfig()
