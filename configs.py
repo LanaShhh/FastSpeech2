@@ -63,6 +63,8 @@ class TrainConfig:
     dataset_folder = "./data/LJSpeech-1.1"
     dataset_archive_path = 'https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2'  # added
     dataset_archive_save_path = './data/LJSpeech-1.1.tar.bz2'
+    train_audio_path = "./train_audio"
+    inf_audio_path = "./results"
 
     wandb_project = 'fastspeech2_sdzhumlyakova_implementation'
 

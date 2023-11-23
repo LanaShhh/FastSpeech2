@@ -28,7 +28,7 @@ class FastSpeech2(nn.Module):
         return mel_output.masked_fill(mask, 0.)
 
     def forward(self, src_seq, src_pos, mel_pos=None, mel_max_length=None,
-                length_target=None, pitch_target=None, energy_target=None, alpha=1.0):
+                length_target=None, pitch_target=None, energy_target=None, alpha=1.0, pitch_coef=1.0, energy_coef=1.0):
         output, _ = self.encoder(src_seq, src_pos)
 
         # Your code here
@@ -45,7 +45,7 @@ class FastSpeech2(nn.Module):
         else:
             output, duration_predictor_output = self.lr(output, alpha)
             output, pitch_predictor_output, energy_predictor_output = \
-                self.variance_adaptor(output)
+                self.variance_adaptor(output, None, None, pitch_coef, energy_coef)
 
             output = self.decoder(output, duration_predictor_output)
             output = self.mel_linear(output)

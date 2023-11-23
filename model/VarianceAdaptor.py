@@ -33,19 +33,19 @@ class VarianceAdaptor(nn.Module):
         self.pitch_embed = nn.Embedding(model_config.quantize_bins_cnt, model_config.encoder_dim)
         self.energy_embed = nn.Embedding(model_config.quantize_bins_cnt, model_config.encoder_dim)
 
-    def forward(self, x, pitch_target=None, energy_target=None):
+    def forward(self, x, pitch_target=None, energy_target=None, pitch_coef=1.0, energy_coef=1.0):
         pitch_predictor_output = self.pitch_predictor(x)
         energy_predictor_output = self.energy_predictor(x)
 
         if pitch_target is not None:
             pitch_additional = torch.bucketize(pitch_target, self.pitch_bins)
         else:
-            pitch_additional = torch.bucketize(pitch_predictor_output, self.pitch_bins)
+            pitch_additional = torch.bucketize(pitch_predictor_output * pitch_coef, self.pitch_bins)
 
         if energy_target is not None:
             energy_additional = torch.bucketize(energy_target, self.energy_bins)
         else:
-            energy_additional = torch.bucketize(energy_predictor_output, self.energy_bins)
+            energy_additional = torch.bucketize(energy_predictor_output * energy_coef, self.energy_bins)
 
         x = x + self.pitch_embed(pitch_additional)
         x = x + self.energy_embed(energy_additional)

@@ -1,18 +1,31 @@
+import argparse
 import logging
 import os
 
 import torch
 import torch.nn as nn
+import wandb
 from torch.optim.lr_scheduler import OneCycleLR
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+import utils
 from collate import collate_fn_tensor
 from configs import model_config, mel_config, train_config
 from datasets import prepare_data
 from loss import FastSpeech2Loss
 from model.FastSpeech2 import FastSpeech2
+from synthesis import log_to_wandb
 from wandb_writer import WanDBWriter
+
+parser = argparse.ArgumentParser(prog="FastSpeech2 training")
+
+parser.add_argument('wandb_key', type=str, required=True,
+                    help='Wandb key for logging')
+
+args = parser.parse_args()
+
+wandb.login("never", args.wandb_key)
 
 dataset = prepare_data()
 
@@ -50,6 +63,11 @@ logger = WanDBWriter(train_config)
 tqdm_bar = tqdm(total=train_config.epochs * len(training_loader) * train_config.batch_expand_size - current_step)
 
 logging.info("Starting training")
+
+audios = None
+
+WaveGlow = utils.get_WaveGlow()
+WaveGlow = WaveGlow.to(train_config.device).cuda()
 
 for epoch in range(train_config.epochs):
     for i, batchs in enumerate(training_loader):
@@ -115,3 +133,5 @@ for epoch in range(train_config.epochs):
                 torch.save({'model': model.state_dict(), 'optimizer': optimizer.state_dict(
                 )}, os.path.join(train_config.checkpoint_path, 'checkpoint_%d.pth.tar' % current_step))
                 print("save model at step %d ..." % current_step)
+
+            audios = log_to_wandb(logger, model, WaveGlow, subpath=f"{current_step}", audios=audios, epoch=current_step)
