@@ -6,22 +6,42 @@
 
 ## Инструкция по использованию кода
 
-Скачиваем данный git-репозиторий
+- Скачиваем данный git-репозиторий
 
 ~~~
 git clone git@github.com:LanaShhh/FastSpeech2.git
 cd FastSpeech2
 ~~~
 
-Скачиваем все необходимые библиотеки
-
-TODO requirements
+- Скачиваем все необходимые библиотеки
 
 ~~~
 pip install -r requirements.txt
 ~~~
 
-Скачиваем модель 
+- Скачиваем модель waveglow (https://drive.google.com/u/0/uc?id=1WsibBTsuRg_SF2Z6L6NFRTT-NjEy1oTx)
+- Создаем папку waveglow/pretrained_model
+- Перемещаем модель в папку waveglow/pretrained_model и переименовываем как waveglow_256channels.pt
+
+### Обучение 
+
+~~~
+python3 training.py wandb_login_key
+~~~
+
+wandb_login_key - обязательный аргумент, ключ для авторизации в wandb (https://wandb.ai), можно получить по ссылке https://wandb.ai/authorize
+
+Результат - run в wandb, папка checkpoints с чекпоинтами модели кажддые 1000 шагов, папка train_audio с синтезированными аудио на каждом чекпоинте
+
+### Инференс 
+
+~~~
+python3 inference.py model_state_dict_path
+~~~
+
+model_state_path - обязательный параметр, путь до модели. Для итоговой генерации с параметрами как в репозитории использовать "./checkpoints/checkpoint_15000.pth.tar"
+
+Результат - папка results с генерациями по конфигурации тестовых текстов
 
 ## Отчет 
 
