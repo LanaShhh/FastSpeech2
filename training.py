@@ -88,6 +88,7 @@ for epoch in range(train_config.epochs):
             src_pos = db["src_pos"].long().to(train_config.device)
             max_mel_len = db["mel_max_len"]
 
+            model = model.train()
             # Forward
             mel_output, duration_prediction, pitch_prediction, energy_prediction = \
                 model(character, src_pos, mel_pos=mel_pos, mel_max_length=max_mel_len,
@@ -134,4 +135,5 @@ for epoch in range(train_config.epochs):
                 )}, os.path.join(train_config.checkpoint_path, 'checkpoint_%d.pth.tar' % current_step))
                 print("save model at step %d ..." % current_step)
 
-            audios = log_to_wandb(logger, model, WaveGlow, subpath=f"{current_step}", audios=audios, epoch=current_step)
+                model = model.eval()
+                audios = log_to_wandb(logger, model, WaveGlow, subpath=f"{current_step}", audios=audios, epoch=current_step)

@@ -1,6 +1,7 @@
 from datetime import datetime
 import numpy as np
 import wandb
+import pandas as pd
 
 
 class WanDBWriter:
@@ -84,3 +85,9 @@ class WanDBWriter:
 
     def add_embedding(self, scalar_name, scalar):
         raise NotImplementedError()
+
+    def add_table(self, dict):
+        table = self.wandb.Table(dataframe=pd.DataFrame.from_dict(dict, orient="index"))
+        self.wandb.log({
+            {"generated_audio": table}
+        })

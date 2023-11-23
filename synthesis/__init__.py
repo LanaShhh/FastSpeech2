@@ -19,13 +19,12 @@ def synthesis(model, text, speed_coef=1.0, pitch_coef=1.0, energy_coef=1.0):
     src_pos = torch.from_numpy(src_pos).long().to(train_config.device)
 
     with torch.no_grad():
-        model_output = model.forward(sequence, src_pos, None, None,
-                                     None, None, None,
+        model_output = model.forward(sequence, src_pos, None, None, None, None, None,
                                      speed_coef, pitch_coef, energy_coef)
     return model_output[0].cpu().transpose(0, 1), model_output.contiguous().transpose(1, 2)
 
 
-def make_audio(model, waveglow_model, text=train_config.logging_text, path=train_config.inf_audio_path,
+def make_audio(model, waveglow_model, text=train_config.logging_text, path=train_config.train_audio_path,
                res_prefix="res", speed_coef=1.0, pitch_coef=1.0, energy_coef=1.0):
 
     phn = txt.text_to_sequence(text, train_config.text_cleaners)
@@ -66,10 +65,10 @@ def log_to_wandb(logger, model, waveglow_model, subpath="latest", speed_coef=1.0
 
     if audios is None:
         audios = {}
-
+        
     audios_len = len(audios.keys())
     audios[audios_len] = {"epoch": epoch, "wav": wav, "waveglow_wav": waveglow_wav}
 
-    logger.add_table("generated_audio", pd.DataFrame.from_dict(audios, orient="index"))
+    logger.add_table("generated_audio", audios)
 
     return audios
