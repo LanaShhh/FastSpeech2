@@ -20,7 +20,7 @@ from wandb_writer import WanDBWriter
 
 parser = argparse.ArgumentParser(prog="FastSpeech2 training")
 
-parser.add_argument('wandb_key', type=str, required=True,
+parser.add_argument('wandb_key', type=str,
                     help='Wandb key for logging')
 
 args = parser.parse_args()
