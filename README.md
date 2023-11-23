@@ -47,7 +47,7 @@ model_state_path - обязательный параметр, путь до мо
 
 ## Отчет 
 
-Отчет в wandb, с описанием работы, графиками функций ошибок, выводами и сгенерированными аудио во время обучения - TODO
+Отчет в wandb, с описанием работы, графиками функций ошибок, выводами и сгенерированными аудио во время обучения - https://wandb.ai/lana-shhh/fastspeech2_sdzhumlyakova_implementation/reports/FastSpeech2-implementation--Vmlldzo2MDYyNzQ2?accessToken=pongkjj2fsf68xaz30bcqz69tp0uticjw47r857iliyotd9hnrmup1er4wykb209
 
 Ссылка на итоговый run в wandb - https://wandb.ai/lana-shhh/fastspeech2_sdzhumlyakova_implementation/runs/x0118aad?workspace=user-lana-shhh
 
