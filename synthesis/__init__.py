@@ -57,7 +57,7 @@ def log_to_wandb(logger, model, waveglow_model, subpath="latest", speed_coef=1.0
     if not os.path.exists(f"{train_config.train_audio_path}/{subpath}"):
         os.makedirs(f"{train_config.train_audio_path}/{subpath}", exist_ok=True)
 
-    wav_path, waveglow_wav_path = make_audio(model, waveglow_model,
+    wav_path, waveglow_wav_path = make_audio(model, waveglow_model, path=f"{train_config.train_audio_path}/{subpath}",
                                              speed_coef=speed_coef, pitch_coef=pitch_coef, energy_coef=energy_coef)
 
     wav = logger.wandb.Audio(wav_path, sample_rate=audio.hparams_audio.sampling_rate)
