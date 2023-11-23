@@ -89,5 +89,5 @@ class WanDBWriter:
     def add_table(self, dict):
         table = self.wandb.Table(dataframe=pd.DataFrame.from_dict(dict, orient="index"))
         self.wandb.log({
-            {"generated_audio": table}
+            "generated_audio": table
         })
