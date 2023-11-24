@@ -32,7 +32,9 @@ python3 training.py wandb_login_key
 
 wandb_login_key - обязательный аргумент, ключ для авторизации в wandb (https://wandb.ai), можно получить по ссылке https://wandb.ai/authorize
 
-Результат - run в wandb, папка checkpoints с чекпоинтами модели кажддые 1000 шагов, папка train_audio с синтезированными аудио на каждом чекпоинте
+Результат - run в wandb, папка checkpoints с чекпоинтами модели кажддые 1000 шагов, папка train_audio с синтезированными аудио на каждом чекпоинте.
+
+Итоговая модель на шаге 15000 - ./checkpoints/checkpoint_15000.pth.tar.
 
 ### Инференс 
 
