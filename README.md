@@ -9,13 +9,14 @@
 - Скачиваем данный git-репозиторий
 
 ~~~
-git clone git@github.com:LanaShhh/FastSpeech2.git
-cd FastSpeech2
+git clone https://github.com/LanaShhh/FastSpeech2.git
+mv FastSpeech2/* .
 ~~~
 
 - Скачиваем все необходимые библиотеки
 
 ~~~
+sudo apt install libcairo2-dev
 pip install -r requirements.txt
 ~~~
 
